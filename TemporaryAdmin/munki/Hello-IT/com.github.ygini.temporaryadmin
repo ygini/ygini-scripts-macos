@@ -1,0 +1,12 @@
+#!/bin/bash
+
+touch /var/db/com.abelionni.scripts.temporaryadmin
+
+launchctl start com.github.ygini.munkiperiodic
+
+while [ -f /var/db/com.abelionni.scripts.temporaryadmin ]
+do
+	sleep 1
+done
+
+exit 0
