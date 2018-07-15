@@ -6,7 +6,7 @@
 ## This payload would be perfect to run in a custom munki check every 30 mins
 
 # Update this variable to fit your needs
-TEMPORARY_ADMIN_GROUP="CORP\Agents"
+TEMPORARY_ADMIN_GROUP="Agents"
 FILE_FLAG_WHEN_TEMPORARY_ADMIN_GROUP_IS_NEEDED="/var/db/com.abelionni.scripts.temporaryadmin"
 
 ## Do not change after this line
