@@ -1,0 +1,5 @@
+#!/bin/bash
+
+/bin/launchctl load /Library/LaunchDaemons/com.github.ygini.temporaryadmin.plist
+
+exit 0

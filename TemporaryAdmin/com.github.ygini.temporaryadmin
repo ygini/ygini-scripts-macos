@@ -1,0 +1,19 @@
+#!/bin/bash
+
+LAUNCHD_IS_HERE=$(launchctl list com.github.ygini.temporaryadmin | wc -l | bc)
+
+if [ ${LAUNCHD_IS_HERE} -eq 0 ]
+then
+	exit 1
+fi
+
+touch /var/db/com.abelionni.scripts.temporaryadmin
+
+launchctl start com.github.ygini.temporaryadmin
+
+while [ -f /var/db/com.abelionni.scripts.temporaryadmin ]
+do
+	sleep 1
+done
+
+exit 0

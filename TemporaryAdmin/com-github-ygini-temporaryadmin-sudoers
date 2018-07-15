@@ -1,0 +1,2 @@
+%everyone ALL=(ALL) NOPASSWD: /usr/local/bin/com.github.ygini.temporaryadmin
+
