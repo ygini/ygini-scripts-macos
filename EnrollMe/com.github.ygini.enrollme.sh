@@ -8,9 +8,28 @@ while getopts "c" option; do
     esac
 done
 
+
+os_maj_vers=$(sw_vers -productVersion | awk -F. '{ print $2; }')
+os_min_vers=$(sw_vers -productVersion | awk -F. '{ print $3; }')
+
+function trigger_nag {
+
+	if [[ $os_maj_vers -ge 13 ]]
+	then
+		/usr/bin/profiles renew -type enrollment
+	elif [[ $os_maj_vers -eq 12 ]] && [[ $os_min_vers -ge 4 ]]
+	then
+		/usr/bin/profiles -N
+	else
+		/usr/libexec/mdmclient dep nag
+	fi
+}
+
+
+
 if [[ $clear_previous_profiles -eq 1 ]]
 then
-	/usr/bin/profiles -D
+	yes | /usr/bin/profiles -D
 fi
 
 dseditgroup -o checkmember -m "$SUDO_USER" admin
@@ -26,20 +45,21 @@ then
 	dseditgroup -o edit -t user -a "$SUDO_USER" admin
 fi
 
-os_maj_vers=$(sw_vers -productVersion | awk -F. '{ print $2; }')
-os_min_vers=$(sw_vers -productVersion | awk -F. '{ print $3; }')
+if [[ -f /var/db/ConfigurationProfiles/.noActivationRecord ]]
+then
+	rm /var/db/ConfigurationProfiles/.cloudConfig*
+	rm /var/db/ConfigurationProfiles/.noActivationRecord
+fi
 
-if [[ $os_maj_vers -ge 13 ]]
+trigger_nag
+
+if [[ $os_maj_vers -le 12 ]] && [[ ! -f /var/db/ConfigurationProfiles/.cloudConfigHasActivationRecord ]]
 then
-	/usr/bin/profiles renew -type enrollment
-elif [[ $os_maj_vers -eq 12 ]] && [[ $os_min_vers -ge 4 ]]
-then
-	/usr/bin/profiles -N
-elif [[ $os_maj_vers -eq 12 ]]
-then
-	/usr/libexec/mdmclien dep nag
-else
-	/usr/libexec/mdmclient cloudconfig
+	rm /var/db/ConfigurationProfiles/.cloudConfig*
+	rm /var/db/ConfigurationProfiles/.noActivationRecord
+	touch /var/db/ConfigurationProfiles/.cloudConfigHasActivationRecord
+	
+	trigger_nag
 fi
 
 if [[ $need_to_update_rights -eq 1 ]]

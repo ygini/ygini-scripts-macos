@@ -1,5 +1,10 @@
 #!/bin/bash
 
-/bin/launchctl load /Library/LaunchDaemons/com.github.ygini.enrollme.plist
+sudoers_d_supported=$(grep "^#includedir /private/etc/sudoers.d$" /etc/sudoers | wc -l | bc)
+
+if [[ $sudoers_d_supported -eq 0 ]]
+then
+	echo "#includedir /private/etc/sudoers.d" >> /etc/sudoers
+fi
 
 exit 0

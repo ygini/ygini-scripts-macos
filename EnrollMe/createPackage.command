@@ -1,7 +1,7 @@
 #!/bin/bash
 
 GIT_ROOT_DIR="$(dirname ${BASH_SOURCE[0]})"
-PKG_VERSION="$(date +%Y.%m.%d).1"
+PKG_VERSION="$(date +%Y.%m.%d.%H.%M)"
 
 PKG_ROOT=$(mktemp -d)
 echo "####### Create package"
