@@ -8,13 +8,16 @@ while getopts "c" option; do
     esac
 done
 
-
+os_main_vers=$(sw_vers -productVersion | awk -F. '{ print $1; }')
 os_maj_vers=$(sw_vers -productVersion | awk -F. '{ print $2; }')
 os_min_vers=$(sw_vers -productVersion | awk -F. '{ print $3; }')
 
 function trigger_nag {
 
-	if [[ $os_maj_vers -ge 13 ]]
+	if [[ $os_main_vers -ge 11 ]]
+	then
+		/usr/bin/profiles renew -type enrollment
+	elif [[ $os_maj_vers -ge 13 ]]
 	then
 		/usr/bin/profiles renew -type enrollment
 	elif [[ $os_maj_vers -eq 12 ]] && [[ $os_min_vers -ge 4 ]]
@@ -24,7 +27,6 @@ function trigger_nag {
 		/usr/libexec/mdmclient dep nag
 	fi
 }
-
 
 
 if [[ $clear_previous_profiles -eq 1 ]]
